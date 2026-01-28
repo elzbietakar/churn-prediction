@@ -1,0 +1,26 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_APP=part2_docker.api
+      - PYTHONPATH=/app
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./:/app/part2_docker
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - API_URL=http://api:5000
+    command: streamlit run part2_docker/app.py --server.port 8501 --server.address 0.0.0.0
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+    volumes:
+      - ./:/app/part2_docker
